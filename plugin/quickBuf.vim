@@ -1,19 +1,20 @@
 " Documentation
     " Name: quickBuf.vim
-    " Version: 1.0
+    " Version: 1.1
     " Description: Simple and quick buffer explorer
     " Author: Alexandre Viau (alexandreviau@gmail.com)
     " Installation: Copy the plugin to the vim plugin directory.
     
 " Usage:
-    " Press <tab>b to show the buffer list in a split window
-    " Press <tab>B to show the buffer list in a new tab
+    " Press <tab>b to show the buffer list in a new tab
+    " Press <tab>B to show the buffer list in a split window
     " Press <Enter> once on the buffer list to open a buffer
     " Press <Del> once on the buffer list to delete a buffer
     " Press ctrl-o after selecting a buffer to return to the buffer list
 
 " History:
     " 1.0 Initial release
+    " 1.1 Switched <tab>b for <tab>B
 
 com! OpenBuffer exe 'norm 0f"l"fyt"' | exe 'edit! ' . @f
 com! DeleteBuffer exe 'norm 0f"l"fyt"' | exe 'bd! ' . @f | exe 'norm dd'
