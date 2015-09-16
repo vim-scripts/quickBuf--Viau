@@ -1,6 +1,6 @@
 " Documentation
     " Name: quickBuf.vim
-    " Version: 1.2
+    " Version: 1.2.1
     " Description: Simple and quick buffer explorer
     " Author: Alexandre Viau (alexandreviau@gmail.com)
     " Installation: Copy the plugin to the vim plugin directory.
@@ -18,6 +18,9 @@
     " 1.0 Initial release
     " 1.1 Switched <tab>b for <tab>B
     " 1.2 I changed the fixed path c:/temp/buffers.txt to $tmp/buffers.txt
+    " 1.2.1 I put the buffers.txt path to a variable
+
+let s:bufPath = substitute($tmp, '\', '/', 'g') . '/buffers.txt'
 
 com! OpenBuffer exe 'norm 0f"l"fyt"' | exe 'edit! ' . @f
 com! DeleteBuffer exe 'norm 0f"l"fyt"' | exe 'bd! ' . @f | exe 'norm dd'
@@ -39,7 +42,7 @@ fu! g:ShowBuffers(winType)
         exe 'nmap <buffer> <Del> :DeleteBuffer<cr>'
     " Write the buffers list to disk, so after selecting a file we can go back to the buffer list with ctrl+o
         "silent! w! c:/temp/buffers.txt
-        exe 'silent! w! ' . substitute($tmp, '\', '/', 'g') . '/buffers.txt'
+        exe 'silent! w! ' . s:bufPath
     endfu
     nmap <tab>b :call g:ShowBuffers('tabe')<cr>
     nmap <tab>B :call g:ShowBuffers('new')<cr>
