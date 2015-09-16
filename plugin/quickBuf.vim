@@ -1,6 +1,6 @@
 " Documentation
     " Name: quickBuf.vim
-    " Version: 1.1
+    " Version: 1.2
     " Description: Simple and quick buffer explorer
     " Author: Alexandre Viau (alexandreviau@gmail.com)
     " Installation: Copy the plugin to the vim plugin directory.
@@ -11,10 +11,13 @@
     " Press <Enter> once on the buffer list to open a buffer
     " Press <Del> once on the buffer list to delete a buffer
     " Press ctrl-o after selecting a buffer to return to the buffer list
+" Todo:
+"   s0 When they are more than 1 match for a buffer, delete all
 
 " History:
     " 1.0 Initial release
     " 1.1 Switched <tab>b for <tab>B
+    " 1.2 I changed the fixed path c:/temp/buffers.txt to $tmp/buffers.txt
 
 com! OpenBuffer exe 'norm 0f"l"fyt"' | exe 'edit! ' . @f
 com! DeleteBuffer exe 'norm 0f"l"fyt"' | exe 'bd! ' . @f | exe 'norm dd'
@@ -35,7 +38,8 @@ fu! g:ShowBuffers(winType)
     " Add a mapping to Del to delete the buffer on the current line
         exe 'nmap <buffer> <Del> :DeleteBuffer<cr>'
     " Write the buffers list to disk, so after selecting a file we can go back to the buffer list with ctrl+o
-        silent! w! c:/temp/buffers.txt
+        "silent! w! c:/temp/buffers.txt
+        exe 'silent! w! ' . substitute($tmp, '\', '/', 'g') . '/buffers.txt'
     endfu
     nmap <tab>b :call g:ShowBuffers('tabe')<cr>
     nmap <tab>B :call g:ShowBuffers('new')<cr>
