@@ -1,8 +1,9 @@
 " Documentation
     " Name: quickBuf.vim
-    " Version: 1.2.3
+    " Version: 2.1
     " Description: Simple and quick buffer explorer
     " Author: Alexandre Viau (alexandreviau@gmail.com)
+    " Thanks to: Xaizek
     " Installation: Copy the plugin to the vim plugin directory.
     
 " Usage:
@@ -21,40 +22,44 @@
     " 1.2.1 I put the buffers.txt path to a variable
     " 1.2.2 I added 'dd' to delete the buffer under the current line and fixed error messages delete some buffers 
     " 1.2.3 I changed the mappings <tab>b to open the buffer list in the current buffer, <tab>B to open the buffer list in a new tab
+    " 2.0 Many changes from Xaizek (thanks!). He remove the usage of the paste register, added unix line endings and changed the commands so the buffers are managed by their numbers, which is better than name, so now it works with buffers like [Scratch]
+    " 2.1 I added commands to delete the empty lines and the current buffer and remove some commands from being registered to the jump list (thanks to Xaizek for this tip). I replaced also 0w by 0^ in the commands to get the numbers if they start at the beginning of the line.
     
 let s:bufPath = substitute($tmp, '\', '/', 'g') . '/buffers.txt'
 
-com! OpenBuffer exe 'norm 0f"l"fyt"' | exe 'edit! ' . @f
-com! DeleteBuffer exe 'norm 0f"l"fyt"' | exe 'silent! bd! ' . @f | exe 'delete'
+com! OpenBuffer exe "norm 0^:buffer!\<c-r>\<c-w>\<cr>"
+com! DeleteBuffer exe "norm 0^:silent! bd!\<c-r>\<c-w>\<cr>" | exe 'delete'
 
 fu! g:ShowBuffers(winType)
     " Redirect the buffers command output to the bufvar variable 
         redir! => bufvar
-        " Run the buffer command to and output via redirection to the bufvar variable
-        silent buffers
+            " Run the buffer command to and output via redirection to the bufvar variable
+            silent buffers
         redir END
     " Open a the current window or a new tab for display
         exe a:winType
-    " Put the content of the bufvar variable to the paste register
-        exe 'let @0 = bufvar'
     " Paste the buffer list to the new buffer/tab
-        norm "0Pggdd
-    " Add a mapping to Enter to open the buffer on the current line 
-        exe 'nmap <buffer> <Enter> :OpenBuffer<cr>'
-    " Add a mapping to Del to delete the buffer on the current line
-        exe 'nmap <buffer> <Del> :DeleteBuffer<cr>'
-        exe 'nmap <buffer> dd :DeleteBuffer<cr>'
+        0put = bufvar
+    " Delete the current buffer (buffers.txt)
+        keepjumps g/^\s*\d\+\s#/d
+    " Delete the empty last and first lines and go to first line. 'keepjumps' Command modifier prevents modification of jump history.
+        keepjumps $d
+        keepjumps 1d
     " Write the buffers list to disk, so after selecting a file we can go back to the buffer list with ctrl+o
-        "silent! w! c:/temp/buffers.txt
-        exe 'silent! w! ' . s:bufPath
+        exe 'silent! w!' s:bufPath
+    " Add a mapping to Enter to open the buffer on the current line 
+        nnoremap <buffer> <Enter> :OpenBuffer<cr>
+    " Add a mapping to Del to delete the buffer on the current line
+        nnoremap <buffer> <Del> :DeleteBuffer<cr>
+        nnoremap <buffer> dd :DeleteBuffer<cr>
+        nnoremap <buffer> dd :DeleteBuffer<cr>
     endfu
 
-nmap <tab>b :call g:ShowBuffers('enew')<cr>
-nmap <tab>B :call g:ShowBuffers('tabe')<cr>
+nnoremap <leader>b :call g:ShowBuffers('enew')<cr>
+nnoremap <leader>B :call g:ShowBuffers('tabe')<cr>
 
 " Mappings I used before this plugin
     " Open a buffer
         " nmap <tab>B :b! 
     " Show the list of buffers from the command window and open one (this is the mapping I used before this plugin)
         " nmap <tab>b :buffers<CR>:b! 
-
