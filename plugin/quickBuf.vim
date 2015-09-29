@@ -1,6 +1,6 @@
 " Documentation
     " Name: quickBuf.vim
-    " Version: 2.1
+    " Version: 2.1.2.1
     " Description: Simple and quick buffer explorer
     " Author: Alexandre Viau (alexandreviau@gmail.com)
     " Thanks to: Xaizek
@@ -27,6 +27,7 @@
     " 2.1 I added commands to delete the empty lines and the current buffer and remove some commands from being registered to the jump list (thanks to Xaizek for this tip). I replaced also 0w by 0^ in the commands to get the numbers if they start at the beginning of the line.
     " 2.1.1 Xaizek: There were also issues with temporary file as $TMP is not always defined and header wasn't updated to mention <leader> and fixed the t mapping.
     " 2.1.2 Added a mapping to 'o' to open the current buffer under the cursor
+    " 2.1.2.1 I updated the version number in the file
 
 let s:tmpPath = empty($TMP) ? "/tmp" : $TMP
 let s:bufPath = substitute(s:tmpPath, '\', '/', 'g') . '/buffers.txt'
